@@ -4,6 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import pl.coderslab.utils.DbUtil;
 
 import java.sql.*;
+import java.util.Arrays;
 
 
 public class UserDao {
@@ -13,9 +14,13 @@ public class UserDao {
     private static final String DELETE_USER_QUERY = "DELETE FROM users WHERE id = ?";
 
     public static void main(String[] args) {
+//        ---- example user in workshop2.sql dump ----
+//        username: "test_user"
+//        email: "example@example.com"
+//        password "test"
     }
 
-    public static User create(User user) {
+    public User create(User user) {
         try (Connection dbConnect = DbUtil.getConnection()) {
             PreparedStatement statement = null;
             statement = dbConnect.prepareStatement(CREATE_USER_QUERY, statement.RETURN_GENERATED_KEYS);
@@ -34,7 +39,7 @@ public class UserDao {
         }
     }
 
-    public static User read(int userId) {
+    public User read(int userId) {
         try (Connection dbConnect = DbUtil.getConnection()) {
             PreparedStatement statement = dbConnect.prepareStatement(READ_USER_QUERY.replace("columnName", "id"));
             statement.setInt(1, userId);
@@ -52,7 +57,7 @@ public class UserDao {
         }
     }
 
-    public static User read(String email) {
+    public User read(String email) {
         try (Connection dbConnect = DbUtil.getConnection()) {
             PreparedStatement statement = dbConnect.prepareStatement(READ_USER_QUERY.replace("columnName", "email"));
             statement.setString(1, email);
@@ -70,7 +75,7 @@ public class UserDao {
         }
     }
 
-    public static void update(User user) {
+    public void update(User user) {
         final String query = "SELECT password FROM users WHERE id = ?;";
         try (Connection dbConnect = DbUtil.getConnection()) {
             PreparedStatement statement = dbConnect.prepareStatement(UPDATE_USER_QUERY);
@@ -100,7 +105,7 @@ public class UserDao {
         }
     }
 
-    public static void delete(int userId) {
+    public void delete(int userId) {
         try (Connection dbConnect = DbUtil.getConnection()) {
             PreparedStatement statement = dbConnect.prepareStatement(DELETE_USER_QUERY);
             statement.setInt(1, userId);
@@ -109,4 +114,40 @@ public class UserDao {
             e.printStackTrace();
         }
     }
+
+    public User[] findAll() {
+        String query = "SELECT * FROM users";
+        User[] usersArr = new User[0];
+        try (Connection dbConnect = DbUtil.getConnection()) {
+            PreparedStatement statement = dbConnect.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User newUser = new User();
+                newUser.setId(resultSet.getInt("id"));
+                newUser.setUserName(resultSet.getString("username"));
+                newUser.setEmail(resultSet.getString("email"));
+                newUser.setPassword(resultSet.getString("password"));
+//                alt create of User
+//                User newUser2 = new User(
+//                        resultSet.getString("username"),
+//                        resultSet.getString("email"),
+//                        resultSet.getString("password")
+//                );
+//                newUser2.setId(resultSet.getInt("id"));
+                usersArr = addToArray(newUser, usersArr);
+            }
+            return usersArr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private User[] addToArray(User newUser, User[] usersArr) {
+        User[] tempArr = Arrays.copyOf(usersArr, usersArr.length + 1);
+        tempArr[tempArr.length - 1] = newUser;
+        return tempArr;
+    }
+
+
 }
