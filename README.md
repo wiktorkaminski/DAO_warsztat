@@ -1,6 +1,6 @@
 # DAO_warsztat
 
-An excercise done to orginize knowledge of OOP and mySQL basics.
+An excercise done to organize knowledge of OOP and mySQL basics.
 
 Workshop.sql dump (mySql) contains an example table with one entry.
 Example user password has beem salted with use of jBCrypt
