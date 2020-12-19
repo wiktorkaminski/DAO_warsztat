@@ -9,4 +9,4 @@ Do poprawnego działania potrzebne są zewnętrzne biblioteki:
 - MySql Connetor, 
 
 Klasa DbUtil zawiera metodę tworzącą połaczenie do bazy danych @localhost z ustalonymi parametrami (konieczne dostosowanie do lokalnych danych). 
-Połączenie skonfigulowane do bazy danych 'workshop2' @localhost
+Połączenie skonfigurowane do bazy danych 'workshop2' @localhost
